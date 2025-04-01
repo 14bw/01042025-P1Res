@@ -1,0 +1,176 @@
+@baseUrl = https://verbose-memory-x5p7gg5pr76g2vrqw-8080.app.github.dev
+@contentType = application/json
+
+
+### Listar todas as categorias
+GET {{baseUrl}}/categorias
+Accept: {{contentType}}
+
+### Buscar categoria por ID
+GET {{baseUrl}}/categorias/1
+Accept: {{contentType}}
+
+### Criar nova categoria
+POST {{baseUrl}}/categorias
+Content-Type: {{contentType}}
+
+{
+  "nome": "Programação"
+}
+
+### Atualizar categoria
+PUT {{baseUrl}}/categorias/1
+Content-Type: {{contentType}}
+
+{
+  "nome": "Programação Java"
+}
+
+### Excluir categoria
+DELETE {{baseUrl}}/categorias/1
+
+
+### ====================== QUESTÕES ======================
+
+### Listar todas as questões
+GET {{baseUrl}}/questoes
+Accept: {{contentType}}
+
+### Buscar questão por ID
+GET {{baseUrl}}/questoes/1
+Accept: {{contentType}}
+
+### Criar nova questão
+POST {{baseUrl}}/questoes
+Content-Type: {{contentType}}
+
+{
+  "enunciado": "Qual é a principal característica da programação orientada a objetos?",
+  "categoriaId": 1
+}
+
+### Atualizar questão
+PUT {{baseUrl}}/questoes/1
+Content-Type: {{contentType}}
+
+{
+  "enunciado": "Explique a principal característica da programação orientada a objetos",
+  "categoriaId": 1
+}
+
+### Excluir questão
+DELETE {{baseUrl}}/questoes/1
+
+
+### ====================== OPÇÕES ======================
+
+### Listar todas as opções
+GET {{baseUrl}}/opcoes
+Accept: {{contentType}}
+
+### Buscar opção por ID
+GET {{baseUrl}}/opcoes/1
+Accept: {{contentType}}
+
+### Criar nova opção
+POST {{baseUrl}}/opcoes
+Content-Type: {{contentType}}
+
+{
+  "descricao": "Encapsulamento",
+  "correta": true,
+  "questaoId": 1
+}
+
+### Criar mais opções para a mesma questão
+POST {{baseUrl}}/opcoes
+Content-Type: {{contentType}}
+
+{
+  "descricao": "Tipagem forte",
+  "correta": false,
+  "questaoId": 1
+}
+
+### Atualizar opção
+PUT {{baseUrl}}/opcoes/1
+Content-Type: {{contentType}}
+
+{
+  "descricao": "Encapsulamento de dados",
+  "correta": true,
+  "questaoId": 1
+}
+
+### Excluir opção
+DELETE {{baseUrl}}/opcoes/1
+
+
+### ====================== FLUXO COMPLETO ======================
+
+### 1. Criar categoria
+# @name createCategoria
+POST {{baseUrl}}/categorias
+Content-Type: {{contentType}}
+
+{
+  "nome": "Banco de Dados"
+}
+
+### 2. Extrair ID da categoria criada
+@categoriaId = {{createCategoria.response.body.id}}
+
+### 3. Criar questão com a categoria
+# @name createQuestao
+POST {{baseUrl}}/questoes
+Content-Type: {{contentType}}
+
+{
+  "enunciado": "Qual comando SQL é usado para buscar dados de uma tabela?",
+  "categoriaId": {{categoriaId}}
+}
+
+### 4. Extrair ID da questão criada
+@questaoId = {{createQuestao.response.body.id}}
+
+### 5. Criar opções para a questão
+POST {{baseUrl}}/opcoes
+Content-Type: {{contentType}}
+
+{
+  "descricao": "SELECT",
+  "correta": true,
+  "questaoId": {{questaoId}}
+}
+
+### 6. Criar mais opções
+POST {{baseUrl}}/opcoes
+Content-Type: {{contentType}}
+
+{
+  "descricao": "INSERT",
+  "correta": false,
+  "questaoId": {{questaoId}}
+}
+
+POST {{baseUrl}}/opcoes
+Content-Type: {{contentType}}
+
+{
+  "descricao": "UPDATE",
+  "correta": false,
+  "questaoId": {{questaoId}}
+}
+
+POST {{baseUrl}}/opcoes
+Content-Type: {{contentType}}
+
+{
+  "descricao": "DELETE",
+  "correta": false,
+  "questaoId": {{questaoId}}
+}
+
+### 7. Buscar a questão com ID
+GET {{baseUrl}}/questoes/{{questaoId}}
+Accept: {{contentType}}
